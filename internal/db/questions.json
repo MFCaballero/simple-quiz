@@ -1,0 +1,93 @@
+{
+    "1": {
+      "label": "What is the capital of France?",
+      "options": [
+        {"id": "A", "label": "Paris", "is_correct": true},
+        {"id": "B", "label": "Berlin", "is_correct": false},
+        {"id": "C", "label": "London", "is_correct": false},
+        {"id": "D", "label": "Madrid", "is_correct": false}
+      ]
+    },
+    "2": {
+      "label": "Who wrote 'Romeo and Juliet'?",
+      "options": [
+        {"id": "A", "label": "William Shakespeare", "is_correct": true},
+        {"id": "B", "label": "Charles Dickens", "is_correct": false},
+        {"id": "C", "label": "Jane Austen", "is_correct": false},
+        {"id": "D", "label": "Homer", "is_correct": false}
+      ]
+    },
+    "3": {
+      "label": "What is the largest mammal on Earth?",
+      "options": [
+        {"id": "A", "label": "Elephant", "is_correct": false},
+        {"id": "B", "label": "Blue Whale", "is_correct": true},
+        {"id": "C", "label": "Giraffe", "is_correct": false},
+        {"id": "D", "label": "Hippopotamus", "is_correct": false}
+      ]
+    },
+    "4": {
+      "label": "In which year did the Titanic sink?",
+      "options": [
+        {"id": "A", "label": "1912", "is_correct": true},
+        {"id": "B", "label": "1920", "is_correct": false},
+        {"id": "C", "label": "1905", "is_correct": false},
+        {"id": "D", "label": "1935", "is_correct": false}
+      ]
+    },
+    "5": {
+      "label": "Who painted the Mona Lisa?",
+      "options": [
+        {"id": "A", "label": "Vincent van Gogh", "is_correct": false},
+        {"id": "B", "label": "Leonardo da Vinci", "is_correct": true},
+        {"id": "C", "label": "Pablo Picasso", "is_correct": false},
+        {"id": "D", "label": "Claude Monet", "is_correct": false}
+      ]
+    },
+    "6": {
+      "label": "Which planet is known as the Red Planet?",
+      "options": [
+        {"id": "A", "label": "Venus", "is_correct": false},
+        {"id": "B", "label": "Jupiter", "is_correct": false},
+        {"id": "C", "label": "Mars", "is_correct": true},
+        {"id": "D", "label": "Saturn", "is_correct": false}
+      ]
+    },
+    "7": {
+      "label": "What is the currency of Japan?",
+      "options": [
+        {"id": "A", "label": "Yuan", "is_correct": false},
+        {"id": "B", "label": "Euro", "is_correct": false},
+        {"id": "C", "label": "Dollar", "is_correct": false},
+        {"id": "D", "label": "Yen", "is_correct": true}
+      ]
+    },
+    "8": {
+      "label": "Who wrote 'To Kill a Mockingbird'?",
+      "options": [
+        {"id": "A", "label": "George Orwell", "is_correct": false},
+        {"id": "B", "label": "Harper Lee", "is_correct": true},
+        {"id": "C", "label": "J.K. Rowling", "is_correct": false},
+        {"id": "D", "label": "F. Scott Fitzgerald", "is_correct": false}
+      ]
+    },
+    "9": {
+      "label": "What is the tallest mountain in the world?",
+      "options": [
+        {"id": "A", "label": "Mount Kilimanjaro", "is_correct": false},
+        {"id": "B", "label": "Mount McKinley", "is_correct": false},
+        {"id": "C", "label": "Mount Everest", "is_correct": true},
+        {"id": "D", "label": "Matterhorn", "is_correct": false}
+      ]
+    },
+    "10": {
+      "label": "Who is known as the 'Father of Computers'?",
+      "options": [
+        {"id": "A", "label": "Alan Turing", "is_correct": true},
+        {"id": "B", "label": "Bill Gates", "is_correct": false},
+        {"id": "C", "label": "Steve Jobs", "is_correct": false},
+        {"id": "D", "label": "Charles Babbage", "is_correct": false}
+      ]
+    }
+}
+  
