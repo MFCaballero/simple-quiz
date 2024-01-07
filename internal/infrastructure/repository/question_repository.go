@@ -33,6 +33,7 @@ func (qr *QuestionRepository) GetAllQuestions(ctx context.Context) (model.Questi
 
 	questions, err := qr.readQuestionsFromFile()
 	if err != nil {
+		qr.logger.Printf("error: getting questions: %v", err)
 		return nil, err
 	}
 
@@ -45,13 +46,14 @@ func (qr *QuestionRepository) GetQuestion(ctx context.Context, id string) (*mode
 
 	questions, err := qr.readQuestionsFromFile()
 	if err != nil {
+		qr.logger.Printf("error: getting question: %v", err)
 		return nil, err
 	}
 
 	question, exists := questions[id]
 	if !exists {
-		err = fmt.Errorf("error: question with id %s not found", id)
-		qr.logger.Printf(err.Error())
+		err = fmt.Errorf("question with id %s not found", id)
+		qr.logger.Printf("error: getting question: %v", err)
 		return nil, err
 	}
 
@@ -61,14 +63,12 @@ func (qr *QuestionRepository) GetQuestion(ctx context.Context, id string) (*mode
 func (qr *QuestionRepository) readQuestionsFromFile() (model.QuestionMap, error) {
 	fileContent, err := os.ReadFile(qr.dataPath)
 	if err != nil {
-		qr.logger.Printf("error: reading file %s: %v", qr.dataPath, err)
-		return nil, err
+		return nil, fmt.Errorf("reading file %s: %v", qr.dataPath, err)
 	}
 
 	questions := model.QuestionMap{}
 	if err := json.Unmarshal(fileContent, &questions); err != nil {
-		qr.logger.Printf("error: decoding json: %v", err)
-		return nil, err
+		return nil, fmt.Errorf("decoding json: %v", err)
 	}
 
 	return questions, nil

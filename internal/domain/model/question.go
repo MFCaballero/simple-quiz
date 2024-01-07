@@ -4,6 +4,7 @@ import "context"
 
 type Option struct {
 	ID        string `json:"id"`
+	Label     string `json:"label"`
 	IsCorrect bool   `json:"is_correct"`
 }
 

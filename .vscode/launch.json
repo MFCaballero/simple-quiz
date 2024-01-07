@@ -6,7 +6,8 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/internal",
+            "program": "${workspaceFolder}/internal/main.go",
+            "cwd": "${workspaceFolder}",
             "env": {
             }
         }

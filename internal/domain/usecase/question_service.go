@@ -41,7 +41,7 @@ func (qs *QuestionService) GetAllQuestions(w http.ResponseWriter, r *http.Reques
 
 func (qs *QuestionService) GetQuestion(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	id := chi.URLParam(r, "id")
+	id := chi.URLParam(r, "question")
 	errMessage := fmt.Sprintf("An error occured getting question with id %s", id)
 
 	question, err := qs.repository.GetQuestion(ctx, id)

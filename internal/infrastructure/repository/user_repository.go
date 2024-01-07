@@ -27,52 +27,40 @@ func NewUserRepository(logger *log.Logger) model.UserRepository {
 	}
 }
 
-func (ur *UserRepository) CreateUser(ctx context.Context, user model.User) error {
+func (ur *UserRepository) CreateUser(ctx context.Context, user model.User) (*model.User, error) {
 	ur.mu.Lock()
 	defer ur.mu.Unlock()
 
-	// Read existing users data from the file
 	users, err := ur.readUsersFromFile()
 	if err != nil {
-		return err
+		ur.logger.Printf("error: creating user: %v", err)
+		return nil, err
 	}
 
-	// Generate a unique user ID (e.g., length of the map + 1)
 	userID := fmt.Sprint(len(users) + 1)
+	user.ID = userID
 	users[userID] = user
 
-	// Write the updated users data back to the file
 	if err := ur.writeUsersToFile(users); err != nil {
-		return err
+		ur.logger.Printf("error: creating user: %v", err)
+		return nil, err
 	}
-
-	return nil
+	return &user, err
 }
 
-func (ur *UserRepository) UpdateUser(ctx context.Context, id string, user *model.User) error {
+func (ur *UserRepository) UpdateUser(ctx context.Context, user *model.User) error {
 	ur.mu.Lock()
 	defer ur.mu.Unlock()
 
-	// Read existing users data from the file
 	users, err := ur.readUsersFromFile()
 	if err != nil {
+		ur.logger.Printf("error: updating user: %v", err)
 		return err
 	}
 
-	// Check if the user with the specified ID exists
-	existingUser, exists := users[id]
-	if !exists {
-		return fmt.Errorf("error: user with id %s not found", id)
-	}
-
-	// Update only the fields that need to be modified
-	existingUser.Name = user.Name
-	existingUser.Score = user.Score
-	existingUser.Answers = user.Answers
-	existingUser.FinishedQuiz = user.FinishedQuiz
-
-	// Write the updated users data back to the file
+	users[user.ID] = *user
 	if err := ur.writeUsersToFile(users); err != nil {
+		ur.logger.Printf("error: updating user: %v", err)
 		return err
 	}
 
@@ -83,16 +71,17 @@ func (ur *UserRepository) GetUser(ctx context.Context, id string) (*model.User, 
 	ur.mu.RLock()
 	defer ur.mu.RUnlock()
 
-	// Read existing users data from the file
 	users, err := ur.readUsersFromFile()
 	if err != nil {
+		ur.logger.Printf("error: getting user: %v", err)
 		return nil, err
 	}
 
-	// Retrieve the user from the map
 	user, exists := users[id]
 	if !exists {
-		return nil, fmt.Errorf("error: user with id %s not found", id)
+		err = fmt.Errorf("user with id %s not found", id)
+		ur.logger.Printf("error: getting user: %v", err)
+		return nil, err
 	}
 
 	return &user, nil
@@ -102,9 +91,9 @@ func (ur *UserRepository) GetAllUsers(ctx context.Context) (model.UserMap, error
 	ur.mu.RLock()
 	defer ur.mu.RUnlock()
 
-	// Read existing users data from the file
 	users, err := ur.readUsersFromFile()
 	if err != nil {
+		ur.logger.Printf("error: getting all users: %v", err)
 		return nil, err
 	}
 
@@ -113,16 +102,21 @@ func (ur *UserRepository) GetAllUsers(ctx context.Context) (model.UserMap, error
 
 func (ur *UserRepository) readUsersFromFile() (model.UserMap, error) {
 	content, err := os.ReadFile(ur.dataPath)
+
 	if err != nil {
-		if os.IsNotExist(err) || len(content) == 0 {
+		if os.IsNotExist(err) {
 			return make(model.UserMap), nil
 		}
-		return nil, err
+		return nil, fmt.Errorf("reading users from file: % v", err)
 	}
 
-	var users model.UserMap
+	if len(content) == 0 {
+		return make(model.UserMap), nil
+	}
+
+	users := model.UserMap{}
 	if err := json.Unmarshal(content, &users); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("decoding content to usermap: % v", err)
 	}
 
 	return users, nil
@@ -131,8 +125,11 @@ func (ur *UserRepository) readUsersFromFile() (model.UserMap, error) {
 func (ur *UserRepository) writeUsersToFile(users model.UserMap) error {
 	content, err := json.MarshalIndent(users, "", "  ")
 	if err != nil {
-		return err
+		return fmt.Errorf("writting users to file: %v", err)
 	}
 
-	return os.WriteFile(ur.dataPath, content, 0644)
+	if err := os.WriteFile(ur.dataPath, content, 0644); err != nil {
+		return fmt.Errorf("writing users to file: %v", err)
+	}
+	return nil
 }

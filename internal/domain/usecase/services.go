@@ -13,7 +13,7 @@ type Services struct {
 
 func LoadServices(userRepo model.UserRepository, questionRepo model.QuestionRepository, logger *log.Logger) Services {
 	return Services{
-		UserService:     NewUserService(userRepo, logger),
+		UserService:     NewUserService(userRepo, questionRepo, logger),
 		QuestionService: NewQuestionService(questionRepo, logger),
 	}
 }

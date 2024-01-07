@@ -82,7 +82,17 @@ func (app *App) routes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Use(middleware.Recoverer)
 
-	mux.Get("/questions", app.services.QuestionService.GetAllQuestions)
-	mux.Get("/question/{id}", app.services.QuestionService.GetQuestion)
+	mux.Route("/questions", func(r chi.Router) {
+		r.Get("/", app.services.QuestionService.GetAllQuestions)
+		r.Get("/{question}", app.services.QuestionService.GetQuestion)
+	})
+	mux.Route("/users", func(r chi.Router) {
+		r.Post("/login", app.services.UserService.Login)
+		r.Get("/{user}/answered", app.services.UserService.GetAnswered)
+		r.Get("/{user}/score", app.services.UserService.GetScoreData)
+		r.Post("/{user}/answer", app.services.UserService.AnswerQuestion)
+		r.Post("/{user}/finish", app.services.UserService.PostAnswers)
+	})
+
 	return mux
 }

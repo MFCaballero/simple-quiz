@@ -1,0 +1,266 @@
+{
+  "1": {
+    "id": "1",
+    "name": "Flor",
+    "score": 0.2,
+    "answers": [
+      {
+        "question_id": "4",
+        "option": {
+          "id": "A",
+          "label": "1912",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "1",
+        "option": {
+          "id": "A",
+          "label": "Paris",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "2",
+        "option": {
+          "id": "B",
+          "label": "Charles Dickens",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "3",
+        "option": {
+          "id": "C",
+          "label": "Giraffe",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "5",
+        "option": {
+          "id": "D",
+          "label": "Claude Monet",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "6",
+        "option": {
+          "id": "A",
+          "label": "Venus",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "7",
+        "option": {
+          "id": "B",
+          "label": "Euro",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "8",
+        "option": {
+          "id": "C",
+          "label": "J.K. Rowling",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "9",
+        "option": {
+          "id": "D",
+          "label": "Matterhorn",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "10",
+        "option": {
+          "id": "D",
+          "label": "Charles Babbage",
+          "is_correct": false
+        }
+      }
+    ],
+    "finished_quiz": true
+  },
+  "2": {
+    "id": "2",
+    "name": "Alice",
+    "score": 0.7,
+    "answers": [
+      {
+        "question_id": "1",
+        "option": {
+          "id": "B",
+          "label": "Berlin",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "2",
+        "option": {
+          "id": "A",
+          "label": "William Shakespeare",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "3",
+        "option": {
+          "id": "B",
+          "label": "Blue Whale",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "4",
+        "option": {
+          "id": "B",
+          "label": "1920",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "5",
+        "option": {
+          "id": "B",
+          "label": "Leonardo da Vinci",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "6",
+        "option": {
+          "id": "C",
+          "label": "Mars",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "7",
+        "option": {
+          "id": "D",
+          "label": "Yen",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "8",
+        "option": {
+          "id": "B",
+          "label": "Harper Lee",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "9",
+        "option": {
+          "id": "C",
+          "label": "Mount Everest",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "10",
+        "option": {
+          "id": "B",
+          "label": "Bill Gates",
+          "is_correct": false
+        }
+      }
+    ],
+    "finished_quiz": true
+  },
+  "3": {
+    "id": "3",
+    "name": "Bob",
+    "score": 0.5,
+    "answers": [
+      {
+        "question_id": "1",
+        "option": {
+          "id": "C",
+          "label": "London",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "2",
+        "option": {
+          "id": "C",
+          "label": "Jane Austen",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "3",
+        "option": {
+          "id": "B",
+          "label": "Blue Whale",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "4",
+        "option": {
+          "id": "C",
+          "label": "1905",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "5",
+        "option": {
+          "id": "C",
+          "label": "Pablo Picasso",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "6",
+        "option": {
+          "id": "B",
+          "label": "Jupiter",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "7",
+        "option": {
+          "id": "C",
+          "label": "Dollar",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "8",
+        "option": {
+          "id": "C",
+          "label": "J.K. Rowling",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "9",
+        "option": {
+          "id": "C",
+          "label": "Mount Everest",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "10",
+        "option": {
+          "id": "C",
+          "label": "Steve Jobs",
+          "is_correct": false
+        }
+      }
+    ],
+    "finished_quiz": true
+  }
+}
