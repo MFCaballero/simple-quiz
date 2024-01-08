@@ -19,7 +19,7 @@ type UserRepository struct {
 
 func NewUserRepository(logger *log.Logger) model.UserRepository {
 	mu := &sync.RWMutex{}
-	dataPath := "./internal/db/users.json"
+	dataPath := "./db/users.json"
 	return &UserRepository{
 		mu:       mu,
 		logger:   logger,

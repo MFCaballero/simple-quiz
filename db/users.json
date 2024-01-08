@@ -175,9 +175,9 @@
     ],
     "finished_quiz": true
   },
-  "3": {
-    "id": "3",
-    "name": "Bob",
+  "4": {
+    "id": "4",
+    "name": "Ross",
     "score": 0.5,
     "answers": [
       {
@@ -258,6 +258,94 @@
           "id": "C",
           "label": "Steve Jobs",
           "is_correct": false
+        }
+      }
+    ],
+    "finished_quiz": true
+  },
+  "3": {
+    "id": "3",
+    "name": "Bob",
+    "score": 0.2,
+    "answers": [
+      {
+        "question_id": "1",
+        "option": {
+          "id": "A",
+          "label": "Paris",
+          "is_correct": true
+        }
+      },
+      {
+        "question_id": "2",
+        "option": {
+          "id": "B",
+          "label": "Charles Dickens",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "3",
+        "option": {
+          "id": "C",
+          "label": "Giraffe",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "4",
+        "option": {
+          "id": "D",
+          "label": "1935",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "5",
+        "option": {
+          "id": "A",
+          "label": "Vincent van Gogh",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "6",
+        "option": {
+          "id": "B",
+          "label": "Jupiter",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "7",
+        "option": {
+          "id": "C",
+          "label": "Dollar",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "8",
+        "option": {
+          "id": "D",
+          "label": "F. Scott Fitzgerald",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "9",
+        "option": {
+          "id": "A",
+          "label": "Mount Kilimanjaro",
+          "is_correct": false
+        }
+      },
+      {
+        "question_id": "10",
+        "option": {
+          "id": "A",
+          "label": "Alan Turing",
+          "is_correct": true
         }
       }
     ],

@@ -190,17 +190,21 @@ func (us *UserService) AnswerQuestion(w http.ResponseWriter, r *http.Request) {
 
 func (us *UserService) GetScoreData(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "user")
-	user, err := us.userRepo.GetUser(r.Context(), userID)
 	errMessage := "An error occured getting user's score data"
-
-	if err != nil {
-		http.Error(w, errMessage, http.StatusNotFound)
-		return
-	}
 
 	users, err := us.userRepo.GetAllUsers(r.Context())
 	if err != nil {
 		http.Error(w, errMessage, http.StatusInternalServerError)
+		return
+	}
+
+	user, ok := users[userID]
+	if !ok {
+		http.Error(w, errMessage, http.StatusNotFound)
+		return
+	}
+	if !user.FinishedQuiz {
+		http.Error(w, "user has not finished quiz", http.StatusForbidden)
 		return
 	}
 	totalUsers := len(users)

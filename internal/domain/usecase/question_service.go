@@ -32,7 +32,7 @@ func (qs *QuestionService) GetAllQuestions(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(questions); err != nil {
+	if err := json.NewEncoder(w).Encode(qs.toQuestionsDTO(questions)); err != nil {
 		qs.logger.Printf("error encoding questions to json: %v", err)
 		http.Error(w, errMessage, http.StatusInternalServerError)
 		return
@@ -50,9 +50,40 @@ func (qs *QuestionService) GetQuestion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	if err := json.NewEncoder(w).Encode(question); err != nil {
+	if err := json.NewEncoder(w).Encode(qs.toQuestionDTO(question)); err != nil {
 		qs.logger.Printf("error encoding question to json: %v", err)
 		http.Error(w, errMessage, http.StatusInternalServerError)
 		return
+	}
+}
+
+type QuestionDTO struct {
+	Label   string      `json:"label"`
+	Options []OptionDTO `json:"options"`
+}
+type OptionDTO struct {
+	ID    string `json:"id"`
+	Label string `json:"label"`
+}
+
+func (qs *QuestionService) toQuestionsDTO(questions model.QuestionMap) map[string]QuestionDTO {
+	questionsMap := make(map[string]QuestionDTO, len(questions))
+	for id, question := range questions {
+		questionsMap[id] = qs.toQuestionDTO(&question)
+	}
+	return questionsMap
+}
+
+func (qs *QuestionService) toQuestionDTO(question *model.Question) QuestionDTO {
+	optionsDTO := make([]OptionDTO, len(question.Options))
+	for i, option := range question.Options {
+		optionsDTO[i] = OptionDTO{
+			ID:    option.ID,
+			Label: option.Label,
+		}
+	}
+	return QuestionDTO{
+		Label:   question.Label,
+		Options: optionsDTO,
 	}
 }

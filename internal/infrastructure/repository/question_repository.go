@@ -19,7 +19,7 @@ type QuestionRepository struct {
 
 func NewQuestionRepository(logger *log.Logger) model.QuestionRepository {
 	mu := &sync.RWMutex{}
-	dataPath := "./internal/db/questions.json"
+	dataPath := "./db/questions.json"
 	return &QuestionRepository{
 		mu:       mu,
 		logger:   logger,
