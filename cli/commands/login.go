@@ -20,22 +20,22 @@ func LoginCommand(sessionManager *session.SessionManager, config config.Config) 
 		Run: func(cmd *cobra.Command, args []string) {
 			name, err := cmd.Flags().GetString("userName")
 			if err != nil {
-				log.Fatal("Error during login:", err)
+				log.Fatal(err)
 			}
 			session, err := sessionManager.GetSession()
 			if err != nil {
-				log.Fatal("Error during login:", err)
+				log.Fatal(err)
 			}
 			if session != nil {
 				log.Fatalf("Already logged user %s", session.Name)
 			}
 			userID, err := loginUser(name, config.BackendURL)
 			if err != nil {
-				log.Fatal("Error during login:", err)
+				log.Fatal(err)
 			}
 
 			if err := sessionManager.CreateSession(userID, name); err != nil {
-				log.Fatal("Error during login:", err)
+				log.Fatal(err)
 			}
 			fmt.Printf("Welcome: %s!", name)
 		},
@@ -46,7 +46,9 @@ func LoginCommand(sessionManager *session.SessionManager, config config.Config) 
 		Use:   "logout",
 		Short: "Logout to the quiz app",
 		Run: func(cmd *cobra.Command, args []string) {
-			sessionManager.DeleteSession()
+			if err := sessionManager.DeleteSession(); err != nil {
+				log.Fatal(err)
+			}
 			fmt.Print("Good bye!")
 		},
 	}

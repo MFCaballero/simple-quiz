@@ -31,7 +31,7 @@ func ListQuestionsCommand(config config.Config) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			questions, err := listQuestions(config.BackendURL)
 			if err != nil {
-				log.Fatal("Error listing questions:", err)
+				log.Fatal(err)
 			}
 			fmt.Println("List of Quiz Questions:")
 			for i := 1; i <= len(questions); i++ {
@@ -50,11 +50,11 @@ func GetQuestionCommand(config config.Config) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			questionNumber, err := cmd.Flags().GetString("questionNumber")
 			if err != nil {
-				log.Fatal("Error getting question:", err)
+				log.Fatal(err)
 			}
 			question, err := getQuestion(config.BackendURL, questionNumber)
 			if err != nil {
-				log.Fatal("Error getting question:", err)
+				log.Fatal(err)
 			}
 
 			fmt.Printf("%s) %s\n", questionNumber, question.Label)

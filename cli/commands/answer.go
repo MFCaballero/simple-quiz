@@ -13,6 +13,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type userID string
+
 func AnswerCommand(sessionManager *session.SessionManager, config config.Config) *cobra.Command {
 	var userCmd = &cobra.Command{
 		Use:   "answer",
@@ -23,9 +25,9 @@ func AnswerCommand(sessionManager *session.SessionManager, config config.Config)
 				log.Fatal(err)
 			}
 			if session == nil {
-				log.Fatal("command only allowed for logged users")
+				log.Fatal("Command only allowed for logged users")
 			}
-			ctx := context.WithValue(cmd.Context(), "userID", session.ID)
+			ctx := context.WithValue(cmd.Context(), userID("userID"), session.ID)
 			cmd.SetContext(ctx)
 		},
 	}

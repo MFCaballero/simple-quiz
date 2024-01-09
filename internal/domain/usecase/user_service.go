@@ -109,11 +109,8 @@ func (us *UserService) PostAnswers(w http.ResponseWriter, r *http.Request) {
 	totalQuestions := len(questions)
 	totalCorrectAnswers := 0
 	for _, answer := range user.Answers {
-		for _, option := range questions[answer.QuestionID].Options {
-			if option.ID == answer.Option.ID && option.IsCorrect {
-				totalCorrectAnswers++
-				break
-			}
+		if answer.Option.IsCorrect {
+			totalCorrectAnswers++
 		}
 	}
 
@@ -207,14 +204,14 @@ func (us *UserService) GetScoreData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "user has not finished quiz", http.StatusForbidden)
 		return
 	}
-	totalUsers := len(users)
+	otherUsers := len(users) - 1
 	betterThanCount := 0
 	for _, otherUser := range users {
 		if otherUser.ID != userID && otherUser.Score < user.Score {
 			betterThanCount++
 		}
 	}
-	betterThan := float32(betterThanCount) / float32(totalUsers)
+	betterThan := float32(betterThanCount) / float32(otherUsers)
 
 	questions, err := us.questionRepo.GetAllQuestions(r.Context())
 	if err != nil {
