@@ -67,7 +67,7 @@ func loginUser(name, url string) (string, error) {
 	}
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusCreated {
-		return "", fmt.Errorf("login failed with status code: %d", response.StatusCode)
+		return "", processErrorResponse(response)
 	}
 
 	responseBody, err := io.ReadAll(response.Body)

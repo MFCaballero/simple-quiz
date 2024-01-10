@@ -5,15 +5,20 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
+	"math"
 	"net/http"
 
 	"github.com/MFCaballero/simple-quiz/cli/config"
 	"github.com/MFCaballero/simple-quiz/cli/session"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-type userID string
+type userIDKey string
+
+const userID userIDKey = "userID"
 
 func AnswerCommand(sessionManager *session.SessionManager, config config.Config) *cobra.Command {
 	var userCmd = &cobra.Command{
@@ -27,7 +32,7 @@ func AnswerCommand(sessionManager *session.SessionManager, config config.Config)
 			if session == nil {
 				log.Fatal("Command only allowed for logged users")
 			}
-			ctx := context.WithValue(cmd.Context(), userID("userID"), session.ID)
+			ctx := context.WithValue(cmd.Context(), userID, session.ID)
 			cmd.SetContext(ctx)
 		},
 	}
@@ -45,7 +50,7 @@ func AnswerQuestionCommand(config config.Config) *cobra.Command {
 		Use:   "post",
 		Short: "Answer a quiz question",
 		Run: func(cmd *cobra.Command, args []string) {
-			userID := cmd.Context().Value("userID").(string)
+			userID := cmd.Context().Value(userID).(string)
 			question, err := cmd.Flags().GetString("question")
 			if err != nil {
 				log.Fatal(err)
@@ -78,7 +83,7 @@ func GetAnsweredCommand(config config.Config) *cobra.Command {
 		Use:   "list",
 		Short: "Get answered questions",
 		Run: func(cmd *cobra.Command, args []string) {
-			userID := cmd.Context().Value("userID").(string)
+			userID := cmd.Context().Value(userID).(string)
 			answered, err := getUserAnswers(config.BackendURL, userID)
 			if err != nil {
 				log.Fatal(err)
@@ -98,7 +103,7 @@ func FinishQuizCommand(config config.Config) *cobra.Command {
 		Use:   "finish",
 		Short: "Finish the quiz",
 		Run: func(cmd *cobra.Command, args []string) {
-			userID := cmd.Context().Value("userID").(string)
+			userID := cmd.Context().Value(userID).(string)
 			if err := finishQuiz(config.BackendURL, userID); err != nil {
 				log.Fatal(err)
 			}
@@ -114,16 +119,25 @@ func GetScoreCommand(config config.Config) *cobra.Command {
 		Use:   "score",
 		Short: "Get user score",
 		Run: func(cmd *cobra.Command, args []string) {
-			userID := cmd.Context().Value("userID").(string)
+			userID := cmd.Context().Value(userID).(string)
 			scoreData, err := getUserScoreData(config.BackendURL, userID)
 			if err != nil {
 				log.Fatal(err)
 			}
 			fmt.Println("**** Your Quiz Results ****")
-			fmt.Printf("Your Score: %s\n", scoreData.Score)
+			fmt.Printf("Your Score: %.0f%%\n", scoreData.Score*100)
 			fmt.Printf("Total Questions: %d\n", scoreData.TotalQuestions)
 			fmt.Printf("Total Correct Answered: %d\n", scoreData.CorrectAnswers)
-			fmt.Printf("You socored %s better than all users that have taken the quiz\n", scoreData.BetterThan)
+			fmt.Printf("You scored better than %.0f%% of other quizzers\n", scoreData.BetterThan*100)
+			var performance string
+			if scoreData.RelativePerformance > 0 {
+				performance = fmt.Sprintf("%.2f%% better than", scoreData.RelativePerformance*100)
+			} else if scoreData.RelativePerformance == 0 {
+				performance = "equal to"
+			} else {
+				performance = fmt.Sprintf("%.2f%% worse than", math.Abs(float64(scoreData.RelativePerformance))*100)
+			}
+			fmt.Printf("Your score is %s the average score for other quizzers\n", performance)
 			fmt.Println("**** Your Answers Details ****")
 			for _, answer := range scoreData.AnswersDetail {
 				fmt.Printf("Question: %s\n", answer.Question)
@@ -154,11 +168,12 @@ type userAnswer struct {
 }
 
 type scoreData struct {
-	Score          string `json:"score"`
-	TotalQuestions int    `json:"total_questions"`
-	CorrectAnswers int    `json:"correct_answers"`
-	BetterThan     string `json:"better_than"`
-	AnswersDetail  []struct {
+	Score               float32 `json:"score"`
+	TotalQuestions      int     `json:"total_questions"`
+	CorrectAnswers      int     `json:"correct_answers"`
+	BetterThan          float32 `json:"better_than"`
+	RelativePerformance float32 `json:"relative_performance"`
+	AnswersDetail       []struct {
 		Question  string `json:"question"`
 		Answer    string `json:"answer"`
 		IsCorrect bool   `json:"is_correct"`
@@ -178,7 +193,7 @@ func answerQuestion(body answerRequest, url, userID string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return processErrorResponse(resp)
 	}
 
 	return nil
@@ -192,7 +207,7 @@ func getUserAnswers(url, userID string) ([]userAnswer, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return nil, processErrorResponse(resp)
 	}
 
 	var answered []userAnswer
@@ -211,27 +226,41 @@ func finishQuiz(url, userID string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return processErrorResponse(resp)
 	}
 
 	return nil
 }
 
-func getUserScoreData(url, userID string) (scoreData, error) {
+func getUserScoreData(url, userID string) (*scoreData, error) {
 	resp, err := http.Get(fmt.Sprintf("%s/users/%s/score", url, userID))
 	if err != nil {
-		return scoreData{}, fmt.Errorf("error getting user score data: %v", err)
+		return nil, fmt.Errorf("error getting user score data: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return scoreData{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return nil, processErrorResponse(resp)
 	}
 
-	var data scoreData
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		return scoreData{}, fmt.Errorf("error decoding response: %v", err)
+	data := &scoreData{}
+	if err := json.NewDecoder(resp.Body).Decode(data); err != nil {
+		return nil, fmt.Errorf("error decoding response: %v", err)
 	}
 
 	return data, nil
+}
+
+func processErrorResponse(resp *http.Response) error {
+	errorMessage, readErr := io.ReadAll(resp.Body)
+	if readErr != nil {
+		return fmt.Errorf("unexpected status code: %d, unable to read response body: %v", resp.StatusCode, readErr)
+	}
+
+	switch resp.StatusCode {
+	case http.StatusBadRequest:
+		return fmt.Errorf("%s, your request is invalid", string(errorMessage))
+	default:
+		return errors.New(string(errorMessage))
+	}
 }

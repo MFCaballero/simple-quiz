@@ -295,10 +295,11 @@ func TestGetScoreData(t *testing.T) {
 		assert.Equal(t, http.StatusOK, rr.Code)
 
 		expectedResponseBody := ScoreData{
-			Score:          "75%",
-			TotalQuestions: 2,
-			CorrectAnswers: 1,
-			BetterThan:     "50%",
+			Score:               0.75,
+			TotalQuestions:      2,
+			CorrectAnswers:      1,
+			BetterThan:          0.5,
+			RelativePerformance: 0.07142859,
 			AnswersDetail: []AnswersDetail{
 				{Question: "Question 1", Answer: "Option A", IsCorrect: true},
 				{Question: "Question 2", Answer: "Option B", IsCorrect: false},

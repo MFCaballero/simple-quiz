@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -194,7 +193,6 @@ func (us *UserService) GetScoreData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, errMessage, http.StatusInternalServerError)
 		return
 	}
-
 	user, ok := users[userID]
 	if !ok {
 		http.Error(w, errMessage, http.StatusNotFound)
@@ -204,25 +202,38 @@ func (us *UserService) GetScoreData(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "user has not finished quiz", http.StatusForbidden)
 		return
 	}
-	otherUsers := len(users) - 1
-	betterThanCount := 0
+
+	var (
+		otherUsers                                                int
+		betterThanCount                                           int
+		betterThan, totalScore, averageScore, relativePerformance float32
+	)
 	for _, otherUser := range users {
-		if otherUser.ID != userID && otherUser.Score < user.Score {
-			betterThanCount++
+		if otherUser.ID != userID && otherUser.FinishedQuiz {
+			otherUsers++
+			if otherUser.Score < user.Score {
+				betterThanCount++
+			}
+			totalScore += otherUser.Score
 		}
 	}
-	betterThan := float32(betterThanCount) / float32(otherUsers)
-
+	if otherUsers > 0 {
+		betterThan = float32(betterThanCount) / float32(otherUsers)
+		averageScore = totalScore / float32(otherUsers)
+		relativePerformance = (user.Score - averageScore) / averageScore
+	}
 	questions, err := us.questionRepo.GetAllQuestions(r.Context())
 	if err != nil {
 		http.Error(w, errMessage, http.StatusInternalServerError)
 		return
 	}
+
 	scoreData := ScoreData{
-		Score:          fmt.Sprintf("%.0f%%", user.Score*100),
-		TotalQuestions: len(questions),
-		CorrectAnswers: int(user.Score * float32(len(questions))),
-		BetterThan:     fmt.Sprintf("%.0f%%", betterThan*100),
+		Score:               user.Score,
+		TotalQuestions:      len(questions),
+		CorrectAnswers:      int(user.Score * float32(len(questions))),
+		BetterThan:          betterThan,
+		RelativePerformance: relativePerformance,
 	}
 	for _, answer := range user.Answers {
 		scoreData.AnswersDetail = append(scoreData.AnswersDetail, AnswersDetail{
@@ -248,11 +259,12 @@ type AnswerRequest struct {
 	OptionID   string `json:"option_id"`
 }
 type ScoreData struct {
-	Score          string          `json:"score"`
-	TotalQuestions int             `json:"total_questions"`
-	CorrectAnswers int             `json:"correct_answers"`
-	BetterThan     string          `json:"better_than"`
-	AnswersDetail  []AnswersDetail `json:"answers_detail"`
+	Score               float32         `json:"score"`
+	TotalQuestions      int             `json:"total_questions"`
+	CorrectAnswers      int             `json:"correct_answers"`
+	BetterThan          float32         `json:"better_than"`
+	RelativePerformance float32         `json:"relative_performance"`
+	AnswersDetail       []AnswersDetail `json:"answers_detail"`
 }
 type AnswersDetail struct {
 	Question  string `json:"question"`

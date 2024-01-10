@@ -85,7 +85,7 @@ func listQuestions(url string) (map[string]question, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return nil, processErrorResponse(resp)
 	}
 
 	questions := map[string]question{}
@@ -106,7 +106,7 @@ func getQuestion(url, id string) (*question, error) {
 	if resp.StatusCode == http.StatusNotFound {
 		return nil, fmt.Errorf("question not found with ID: %s", id)
 	} else if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return nil, processErrorResponse(resp)
 	}
 	question := &question{}
 	if err := json.NewDecoder(resp.Body).Decode(question); err != nil {
